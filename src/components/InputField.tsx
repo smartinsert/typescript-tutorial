@@ -1,17 +1,26 @@
-import React, { useRef } from "react";
-import "./styles.css";
+import React, { useRef, useState } from 'react';
+import { Actions } from './model';
+import './styles.css';
 
 interface Props {
-  todo: string;
-  setTodo: React.Dispatch<React.SetStateAction<string>>;
-  handleAdd: (e: React.FormEvent) => void;
+  dispatchTodos: React.Dispatch<Actions>;
 }
 
-const InputField: React.FC<Props> = ({ todo, setTodo, handleAdd }: Props) => {
+const InputField: React.FC<Props> = ({ dispatchTodos }: Props) => {
+  const [todo, setTodo] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (todo) {
+      dispatchTodos({ type: 'add', payload: todo });
+      setTodo('');
+    }
+  };
+
   return (
     <form
-      className="input"
+      className='input'
       onSubmit={(e) => {
         handleAdd(e);
         inputRef.current?.blur();
@@ -19,15 +28,18 @@ const InputField: React.FC<Props> = ({ todo, setTodo, handleAdd }: Props) => {
     >
       <input
         ref={inputRef}
-        type="input"
+        type='input'
         value={todo}
         onChange={(e) => setTodo(e.target.value)}
-        placeholder="Enter a task"
-        className="input__box"
+        placeholder='Enter a task'
+        className='input__box'
       />
-      <button className="input__submit" type="submit">
-        {" "}
-        Go{" "}
+      <button
+        className='input__submit'
+        type='submit'
+      >
+        {' '}
+        Go{' '}
       </button>
     </form>
   );
